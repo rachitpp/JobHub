@@ -1,7 +1,9 @@
 import axios from "axios";
 import { JobsResponse } from "../types/job";
 
-const API_URL = "https://jobhub-7scy.onrender.com";
+// Use environment variable with fallback
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://jobhub-7scy.onrender.com";
 
 // Create axios instance with default config
 const api = axios.create({
@@ -10,8 +12,41 @@ const api = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  withCredentials: true,
+  withCredentials: false, // Changed to false since we're not using cookies
 });
+
+// Add request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log("Making request to:", config.url);
+    return config;
+  },
+  (error) => {
+    console.error("Request error:", error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log("Response received:", response.status);
+    return response;
+  },
+  (error) => {
+    console.error("Response error:", {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers,
+      },
+    });
+    return Promise.reject(error);
+  }
+);
 
 interface FetchJobsParams {
   page?: number;
