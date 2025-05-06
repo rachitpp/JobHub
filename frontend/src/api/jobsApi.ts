@@ -1,7 +1,7 @@
 import axios from "axios";
 import { JobsResponse } from "../types/job";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://jobhub-7scy.onrender.com/api";
 
 interface FetchJobsParams {
   page?: number;
