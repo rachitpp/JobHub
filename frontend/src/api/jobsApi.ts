@@ -20,7 +20,6 @@ const fetchWithTimeout = async (
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "x-nextjs-data": "1",
       },
       mode: "cors",
       credentials: "omit",

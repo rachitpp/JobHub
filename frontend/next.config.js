@@ -24,6 +24,10 @@ const nextConfig = {
       },
     ];
   },
+  // Add images configuration to allow external images
+  images: {
+    domains: ["media.licdn.com", "media.foundit.in", "jobhub-7scy.onrender.com"],
+  },
 };
 
 module.exports = nextConfig;
