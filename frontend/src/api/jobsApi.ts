@@ -13,12 +13,23 @@ export const fetchJobs = async (
   params: FetchJobsParams = {}
 ): Promise<JobsResponse> => {
   try {
+    console.log("Fetching jobs from:", `${API_URL}/jobs`);
     const response = await axios.get<JobsResponse>(`${API_URL}/jobs`, {
       params,
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching jobs:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Error fetching jobs:", {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        url: error.config?.url,
+        params: error.config?.params,
+      });
+    } else {
+      console.error("Error fetching jobs:", error);
+    }
     throw error;
   }
 };
