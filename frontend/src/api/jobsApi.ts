@@ -1,7 +1,7 @@
 import axios from "axios";
 import { JobsResponse } from "../types/job";
 
-const API_URL = "https://jobhub-7scy.onrender.com/api";
+const API_URL = "https://jobhub-7scy.onrender.com";
 
 interface FetchJobsParams {
   page?: number;
@@ -13,8 +13,8 @@ export const fetchJobs = async (
   params: FetchJobsParams = {}
 ): Promise<JobsResponse> => {
   try {
-    console.log("Fetching jobs from:", `${API_URL}/jobs`);
-    const response = await axios.get<JobsResponse>(`${API_URL}/jobs`, {
+    console.log("Fetching jobs from:", `${API_URL}/api/jobs`);
+    const response = await axios.get<JobsResponse>(`${API_URL}/api/jobs`, {
       params,
     });
     return response.data;
