@@ -1,7 +1,5 @@
 import { JobsResponse } from "../types/job";
 
-const API_URL = "https://jobhub-7scy.onrender.com";
-
 // Simple fetch function
 const fetchWithTimeout = async (
   url: string,
@@ -43,7 +41,7 @@ export const fetchJobs = async (
     if (params.limit) queryParams.append("limit", params.limit.toString());
     if (params.location) queryParams.append("location", params.location);
 
-    const url = `${API_URL}/api/jobs${
+    const url = `/api/jobs${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
     console.log("Fetching from:", url);

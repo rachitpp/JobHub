@@ -21,9 +21,10 @@ app.use(express.json());
 // CORS configuration
 app.use(
   cors({
-    origin: "*", // Allow all origins for now
+    origin: ["https://job-hub-three.vercel.app", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true,
   })
 );
 
