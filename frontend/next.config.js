@@ -5,12 +5,6 @@ const nextConfig = {
       {
         source: "/api/:path*",
         destination: "https://jobhub-7scy.onrender.com/api/:path*",
-        has: [
-          {
-            type: "header",
-            key: "x-nextjs-data",
-          },
-        ],
       },
     ];
   },
