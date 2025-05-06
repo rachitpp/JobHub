@@ -1,52 +1,32 @@
-import axios from "axios";
 import { JobsResponse } from "../types/job";
 
-// Use environment variable with fallback
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://jobhub-7scy.onrender.com";
+const API_URL = "https://jobhub-7scy.onrender.com";
 
-// Create axios instance with default config
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-  withCredentials: false, // Changed to false since we're not using cookies
-});
+// Simple fetch function
+const fetchWithTimeout = async (
+  url: string,
+  options: RequestInit = {},
+  timeout = 5000
+) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
-// Add request interceptor for debugging
-api.interceptors.request.use(
-  (config) => {
-    console.log("Making request to:", config.url);
-    return config;
-  },
-  (error) => {
-    console.error("Request error:", error);
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for debugging
-api.interceptors.response.use(
-  (response) => {
-    console.log("Response received:", response.status);
-    return response;
-  },
-  (error) => {
-    console.error("Response error:", {
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
-      config: {
-        url: error.config?.url,
-        method: error.config?.method,
-        headers: error.config?.headers,
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
-    return Promise.reject(error);
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
   }
-);
+};
 
 interface FetchJobsParams {
   page?: number;
@@ -58,23 +38,24 @@ export const fetchJobs = async (
   params: FetchJobsParams = {}
 ): Promise<JobsResponse> => {
   try {
-    console.log("Fetching jobs from:", `${API_URL}/api/jobs`);
-    const response = await api.get<JobsResponse>("/api/jobs", {
-      params,
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("Error fetching jobs:", {
-        message: error.message,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        url: error.config?.url,
-        params: error.config?.params,
-      });
-    } else {
-      console.error("Error fetching jobs:", error);
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append("page", params.page.toString());
+    if (params.limit) queryParams.append("limit", params.limit.toString());
+    if (params.location) queryParams.append("location", params.location);
+
+    const url = `${API_URL}/api/jobs${
+      queryParams.toString() ? `?${queryParams.toString()}` : ""
+    }`;
+    console.log("Fetching from:", url);
+
+    const response = await fetchWithTimeout(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
     throw error;
   }
 };

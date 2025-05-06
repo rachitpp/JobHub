@@ -14,6 +14,11 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 
+interface FetchError extends Error {
+  name: string;
+  message: string;
+}
+
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
@@ -46,8 +51,10 @@ export default function Home() {
           setErrorType(null);
         }
 
+        console.log("Starting to fetch jobs...");
         const location = searchQuery.trim() !== "" ? searchQuery : undefined;
         const response = await fetchAllJobsNoLimit(location);
+        console.log("Jobs fetched successfully:", response);
 
         // Sort by newest first by default
         const sortedJobs = [...response.data].sort(
@@ -59,32 +66,26 @@ export default function Home() {
         setJobs(sortedJobs);
         applyFilters(sortedJobs);
         setRetryCount(0); // Reset retry count on success
-      } catch (err: Error | unknown) {
+      } catch (err: unknown) {
         console.error("Error loading jobs:", err);
 
-        // Determine error type
-        if (
-          (err instanceof Error && err.message === "Network Error") ||
-          !navigator.onLine
-        ) {
-          setError(
-            "Network connection issue. Please check your internet connection."
-          );
+        const error = err as FetchError;
+
+        // More detailed error handling
+        if (error.name === "AbortError") {
+          setError("Request timed out. Please try again.");
           setErrorType("network");
-        } else if (
-          typeof err === "object" &&
-          err !== null &&
-          "response" in err &&
-          err.response &&
-          typeof err.response === "object" &&
-          "status" in err.response &&
-          typeof err.response.status === "number" &&
-          err.response.status >= 500
-        ) {
-          setError("Server error. Our team has been notified.");
+        } else if (!navigator.onLine) {
+          setError("You are offline. Please check your internet connection.");
+          setErrorType("network");
+        } else if (error.message?.includes("Failed to fetch")) {
+          setError("Could not connect to the server. Please try again later.");
+          setErrorType("network");
+        } else if (error.message?.includes("HTTP error")) {
+          setError("Server error. Please try again later.");
           setErrorType("server");
         } else {
-          setError("Failed to fetch jobs. Please try again later.");
+          setError("An unexpected error occurred. Please try again.");
           setErrorType("unknown");
         }
 
