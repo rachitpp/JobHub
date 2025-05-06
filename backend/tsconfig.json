@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types"],
-    "types": ["node", "express", "cors", "mongoose"]
+    "types": ["node", "express", "cors"] // Remove 'mongoose' from here
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
