@@ -1,5 +1,8 @@
 import { JobsResponse } from "../types/job";
 
+// API base URL - use environment variable or fallback to the deployed backend URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://jobhub-7scy.onrender.com";
+
 // Simple fetch function with better error handling
 const fetchWithTimeout = async (
   url: string,
@@ -60,7 +63,8 @@ export const fetchJobs = async (
     if (params.limit) queryParams.append("limit", params.limit.toString());
     if (params.location) queryParams.append("location", params.location);
 
-    const url = `/api/jobs${
+    // Use absolute URL with the API base URL
+    const url = `${API_BASE_URL}/api/jobs${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
     console.log("Fetching jobs from:", url);

@@ -1,13 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "https://jobhub-7scy.onrender.com/api/:path*",
-      },
-    ];
-  },
+  // We can remove the rewrites since we're now using absolute URLs in the API client
   // Enable static optimization
   reactStrictMode: true,
   // Configure headers for CORS
