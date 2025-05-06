@@ -31,7 +31,14 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
-
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "JobHub API is running",
+    endpoints: {
+      jobs: "/api/jobs",
+    },
+  });
+});
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", environment: NODE_ENV });
