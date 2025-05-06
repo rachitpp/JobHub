@@ -18,12 +18,12 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 // Middleware
 app.use(express.json());
 
-// CORS configuration
+// CORS configuration - Allow all origins for now to troubleshoot
 app.use(
   cors({
-    origin: ["https://job-hub-three.vercel.app", "http://localhost:3000"],
+    origin: "*", // Allow all origins
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "x-nextjs-data"],
     credentials: true,
   })
 );
