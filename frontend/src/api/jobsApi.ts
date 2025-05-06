@@ -3,6 +3,16 @@ import { JobsResponse } from "../types/job";
 
 const API_URL = "https://jobhub-7scy.onrender.com";
 
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  withCredentials: true,
+});
+
 interface FetchJobsParams {
   page?: number;
   limit?: number | string;
@@ -14,7 +24,7 @@ export const fetchJobs = async (
 ): Promise<JobsResponse> => {
   try {
     console.log("Fetching jobs from:", `${API_URL}/api/jobs`);
-    const response = await axios.get<JobsResponse>(`${API_URL}/api/jobs`, {
+    const response = await api.get<JobsResponse>("/api/jobs", {
       params,
     });
     return response.data;

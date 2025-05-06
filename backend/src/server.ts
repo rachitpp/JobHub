@@ -21,12 +21,10 @@ app.use(express.json());
 // CORS configuration
 app.use(
   cors({
-    origin:
-      NODE_ENV === "production"
-        ? [FRONTEND_URL, "*.vercel.app"] // Allow Vercel domains in production
-        : "http://localhost:3000", // Allow localhost in development
+    origin: ["https://job-hub-three.vercel.app", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   })
 );
 
